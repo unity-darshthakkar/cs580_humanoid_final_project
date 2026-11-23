@@ -4,12 +4,13 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/softbank/nao/protos/Nao.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/balls/protos/Ball.proto"
 
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.045981220017630185 -0.03366380131471023 -0.9983749174967959 4.40390070552941
-  position 1.633565426847883 -3.693140877601274 0.793297583306078
+  orientation 0.05595553836880873 -0.037219023029490705 -0.9977393056558347 4.313364318137778
+  position 1.962377127581595 -3.6081079238837592 0.8556834715327756
 }
 TexturedBackground {
 }
@@ -21,43 +22,22 @@ RectangleArena {
 Nao {
   controller "humanoid_controller"
 }
-Solid {
-  translation 0.45 0 0.125
-  children [
-    Shape {
-      appearance PBRAppearance {
-      }
-      geometry Box {
-        size 0.5 0.35 0.25
-      }
-      isPickable FALSE
-    }
-  ]
-  name "pickup_table"
-  boundingObject Box {
-    size 0.5 0.35 0.25
-  }
-  recognitionColors [
-    0 0 0
-  ]
+Ball {
+  translation 1.2 0 0.065
+  name "Basketball"
+  color 1 0.35 0.02
+  radius 0.065
+  mass 0.15
 }
 Solid {
-  translation 0.45 0 0.28
+  translation 1.2 1.3 0
+  rotation 1 0 0 1.5708
   children [
-    Shape {
-      appearance PBRAppearance {
-        baseColor 1 0 0
-      }
-      geometry Box {
-        size 0.06 0.06 0.06
-      }
+    CadShape {
+      url [
+        "../objects/basketball_hoop/hoop.obj"
+      ]
     }
   ]
-  name "redbox"
-  boundingObject Box {
-    size 0.06 0.06 0.06
-  }
-  physics Physics {
-    mass 0.02
-  }
+  name "BasketballHoop"
 }
