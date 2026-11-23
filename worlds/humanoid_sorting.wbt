@@ -9,8 +9,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.05595553836880873 -0.037219023029490705 -0.9977393056558347 4.313364318137778
-  position 1.962377127581595 -3.6081079238837592 0.8556834715327756
+  orientation 0.04411867526871556 -0.02667662774444968 -0.9986700656496708 4.228022620363798
+  position 2.5716216359618977 -2.6989511990387456 0.7814411388022505
 }
 TexturedBackground {
 }
@@ -40,4 +40,139 @@ Solid {
     }
   ]
   name "BasketballHoop"
+  boundingObject Group {
+    children [
+      Pose {
+        translation 0.04 0.93 0.035
+        children [
+          Shape {
+            geometry Sphere {
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation 0.04 0.93 0.225
+        children [
+          Shape {
+            geometry Sphere {
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation -0.04 0.93 0.035
+        children [
+          Shape {
+            geometry Sphere {
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation 0 0.93 0.025
+        rotation 0 0 1 4.692820414042842e-06
+        children [
+          Shape {
+            geometry Sphere {
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation 0 0.93 0.235
+        children [
+          Shape {
+            geometry Sphere {
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation -0.04 0.93 0.225
+        children [
+          Shape {
+            geometry Sphere {
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation 0.1 0.93 0.135
+        children [
+          Shape {
+            geometry Sphere {
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation -0.1 0.93 0.135
+        children [
+          Shape {
+            geometry Sphere {
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation 0.08 0.93 0.065
+        children [
+          Shape {
+            geometry Sphere {
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation 0.08 0.93 0.195
+        children [
+          Shape {
+            geometry Sphere {
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation -0.08 0.93 0.195
+        children [
+          Shape {
+            geometry Sphere {
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation -0.08 0.93 0.065
+        children [
+          Shape {
+            geometry Sphere {
+              radius 0.015
+            }
+          }
+        ]
+      }
+      Pose {
+        translation 0 1 0
+        children [
+          Shape {
+            geometry Box {
+              size 0.4 0.3 0.03
+            }
+          }
+        ]
+      }
+    ]
+  }
 }
