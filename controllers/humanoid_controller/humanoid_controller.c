@@ -45,8 +45,11 @@ static double hand_target = HAND_OPEN_ANGLE;
 
 static WbMotionRef forwards = NULL;
 static WbMotionRef backwards = NULL;
+static WbMotionRef backwards_carry = NULL;
 static WbMotionRef side_step_left = NULL;
+static WbMotionRef side_step_left_carry = NULL;
 static WbMotionRef side_step_right = NULL;
+static WbMotionRef side_step_right_carry = NULL;
 static WbMotionRef turn_left = NULL;
 static WbMotionRef turn_right = NULL;
 static WbMotionRef squat = NULL;
@@ -62,7 +65,7 @@ typedef enum {
 } PostureState;
 
 static PostureState posture = STANDING;
-static double grip_settle_remaining = 0.0;
+static double grip_settle_wwwwremaining = 0.0;
 static int grip_only_test = 0;
 
 /* Supervisor state; ball must have DEF BASKETBALL in the Webots world. */
@@ -257,12 +260,17 @@ static void release_ball(int launch) {
 static void load_motion_files(void) {
   forwards = wbu_motion_new("../../motions/Forwards50.motion");
   backwards = wbu_motion_new("../../motions/Backwards.motion");
+  backwards_carry = wbu_motion_new("../../motions/BackwardsCarry.motion");
   side_step_left = wbu_motion_new("../../motions/SideStepLeft.motion");
+  side_step_left_carry = wbu_motion_new("../../motions/SideStepLeftCarry.motion");
   side_step_right = wbu_motion_new("../../motions/SideStepRight.motion");
+  side_step_right_carry = wbu_motion_new("../../motions/SideStepRightCarry.motion");
   turn_left = wbu_motion_new("../../motions/TurnLeft60.motion");
   turn_right = wbu_motion_new("../../motions/TurnRight60.motion");
   squat = wbu_motion_new("../../motions/Squat.motion");
   stand_from_squat = wbu_motion_new("../../motions/StandFromSquat.motion");
+  if (!backwards_carry || !side_step_left_carry || !side_step_right_carry)
+    fprintf(stderr, "Carry navigation motion missing; copy *Carry.motion files to ../../motions/\n");
   if (!squat || !stand_from_squat)
     fprintf(stderr, "Squat motion file missing: check ../../motions/\n");
 }
@@ -442,15 +450,15 @@ static void handle_key(int key) {
       break;
     case 'S':
     case 's':
-      start_motion(backwards);
+      start_motion(ball_attached ? backwards_carry : backwards);
       break;
     case 'A':
     case 'a':
-      start_motion(side_step_left);
+      start_motion(ball_attached ? side_step_left_carry : side_step_left);
       break;
     case 'D':
     case 'd':
-      start_motion(side_step_right);
+      start_motion(ball_attached ? side_step_right_carry : side_step_right);
       break;
     case WB_KEYBOARD_LEFT:
       start_motion(turn_left);
