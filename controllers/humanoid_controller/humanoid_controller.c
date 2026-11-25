@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* CS580 Humanoid Sorting: keyboard navigation and hand control only. */
+/* CS580 NAO Basketball: keyboard navigation, hands, and squat/stand motions. */
 #include <stdio.h>
 #include <webots/keyboard.h>
 #include <webots/motor.h>
@@ -32,7 +32,18 @@ static WbMotionRef side_step_left = NULL;
 static WbMotionRef side_step_right = NULL;
 static WbMotionRef turn_left = NULL;
 static WbMotionRef turn_right = NULL;
+static WbMotionRef squat = NULL;
+static WbMotionRef stand_from_squat = NULL;
 static WbMotionRef currently_playing = NULL;
+
+typedef enum {
+  STANDING,
+  SQUATTING,
+  SQUATTED,
+  STANDING_UP
+} PostureState;
+
+static PostureState posture = STANDING;
 
 static void load_motion_files(void) {
   forwards = wbu_motion_new("../../motions/Forwards50.motion");
@@ -41,17 +52,24 @@ static void load_motion_files(void) {
   side_step_right = wbu_motion_new("../../motions/SideStepRight.motion");
   turn_left = wbu_motion_new("../../motions/TurnLeft60.motion");
   turn_right = wbu_motion_new("../../motions/TurnRight60.motion");
+  squat = wbu_motion_new("../../motions/Squat.motion");
+  stand_from_squat = wbu_motion_new("../../motions/StandFromSquat.motion");
+  if (!squat || !stand_from_squat)
+    fprintf(stderr, "Squat motion file missing: check ../../motions/\n");
 }
 
-static void start_motion(WbMotionRef motion) {
+static int start_motion(WbMotionRef motion) {
   if (!motion) {
-    fprintf(stderr, "Failed to load motion; check ../../motions/\n");
-    return;
+    fprintf(stderr, "Motion not loaded; check ../../motions/\n");
+    return 0;
   }
+
   if (currently_playing)
     wbu_motion_stop(currently_playing);
+
   wbu_motion_play(motion);
   currently_playing = motion;
+  return 1;
 }
 
 static void initialize_hands(void) {
@@ -66,7 +84,7 @@ static void initialize_hands(void) {
 
 static void set_hands_angle(double angle) {
   for (int i = 0; i < PHALANX_MAX; ++i) {
-    WbDeviceTag motors[2] = {left_phalanx[i], right_phalanx[i]};
+    const WbDeviceTag motors[2] = {left_phalanx[i], right_phalanx[i]};
     for (int hand = 0; hand < 2; ++hand) {
       WbDeviceTag motor = motors[hand];
       if (!motor)
@@ -83,8 +101,50 @@ static void set_hands_angle(double angle) {
   }
 }
 
+static void update_posture(void) {
+  if (posture == SQUATTING && squat && wbu_motion_is_over(squat)) {
+    posture = SQUATTED;
+    currently_playing = NULL;
+    printf("Squat completed. Press L to stand.\n");
+  } else if (posture == STANDING_UP && stand_from_squat && wbu_motion_is_over(stand_from_squat)) {
+    posture = STANDING;
+    currently_playing = NULL;
+    printf("Stand-up motion completed.\n");
+  }
+}
+
 static void handle_key(int key) {
-  // Webots returns uppercase ASCII for ordinary letter keys.
+  // Hand controls remain available while squatting.
+  if (key == WB_KEYBOARD_UP) {
+    set_hands_angle(0.96);
+    return;
+  }
+  if (key == WB_KEYBOARD_DOWN) {
+    set_hands_angle(0.0);
+    return;
+  }
+
+  if (key == 'K' || key == 'k') {
+    if (posture == STANDING &&
+        (!currently_playing || wbu_motion_is_over(currently_playing)) &&
+        start_motion(squat)) {
+      posture = SQUATTING;
+      printf("Squatting...\n");
+    }
+    return;
+  }
+  if (key == 'L' || key == 'l') {
+    if (posture == SQUATTED && start_motion(stand_from_squat)) {
+      posture = STANDING_UP;
+      printf("Standings up...\n");
+    }
+    return;
+  }
+
+  // Don't interrupt a squat or walk in a squatted posture.
+  if (posture != STANDING)
+    return;
+
   switch (key) {
     case 'W':
     case 'w':
@@ -101,12 +161,6 @@ static void handle_key(int key) {
     case 'D':
     case 'd':
       start_motion(side_step_right);
-      break;
-    case WB_KEYBOARD_UP:
-      set_hands_angle(0.96);  // Open hands
-      break;
-    case WB_KEYBOARD_DOWN:
-      set_hands_angle(0.0);   // Close hands
       break;
     case WB_KEYBOARD_LEFT:
       start_motion(turn_left);
@@ -126,9 +180,10 @@ int main(void) {
   initialize_hands();
   load_motion_files();
 
-  printf("NAO controller: W/S walk, A/D sidestep, LEFT/RIGHT turn, UP open hands, DOWN close hands.\n");
+  printf("NAO: W/S walk, A/D sidestep, LEFT/RIGHT turn, UP/DOWN hands, K squat, L stand.\n");
 
   while (wb_robot_step(time_step) != -1) {
+    update_posture();
     const int key = wb_keyboard_get_key();
     if (key != -1)
       handle_key(key);
