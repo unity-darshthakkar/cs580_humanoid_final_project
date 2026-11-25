@@ -21,13 +21,29 @@ RectangleArena {
 }
 Nao {
   controller "humanoid_controller"
+  supervisor TRUE
 }
-Ball {
+DEF BASKETBALL Ball {
   translation 1.2 0 0.065
   name "Basketball"
   color 1 0.35 0.02
-  radius 0.065
+  radius 0.06
   mass 0.15
+}
+DEF CARRIED_BASKETBALL_VISUAL Transform {
+  translation 205 205 -5
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.72 0.19 0.035
+        roughness 0.83
+        metalness 0
+      }
+      geometry Sphere {
+        radius 0.06
+      }
+    }
+  ]
 }
 Solid {
   translation 1.2 1.3 0
