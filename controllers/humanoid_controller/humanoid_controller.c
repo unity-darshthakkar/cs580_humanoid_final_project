@@ -55,6 +55,7 @@ static WbMotionRef turn_right = NULL;
 static WbMotionRef squat = NULL;
 static WbMotionRef stand_from_squat = NULL;
 static WbMotionRef currently_playing = NULL;
+static WbMotionRef shoot = NULL;
 
 typedef enum {
   STANDING,
@@ -65,7 +66,7 @@ typedef enum {
 } PostureState;
 
 static PostureState posture = STANDING;
-static double grip_settle_wwwwremaining = 0.0;
+static double grip_settle_remaining = 0.0;
 static int grip_only_test = 0;
 
 /* Supervisor state; ball must have DEF BASKETBALL in the Webots world. */
@@ -269,6 +270,7 @@ static void load_motion_files(void) {
   turn_right = wbu_motion_new("../../motions/TurnRight60.motion");
   squat = wbu_motion_new("../../motions/Squat.motion");
   stand_from_squat = wbu_motion_new("../../motions/StandFromSquat.motion");
+  shoot = wbu_motion_new("../../motions/Shoot.motion");
   if (!backwards_carry || !side_step_left_carry || !side_step_right_carry)
     fprintf(stderr, "Carry navigation motion missing; copy *Carry.motion files to ../../motions/\n");
   if (!squat || !stand_from_squat)
@@ -459,6 +461,10 @@ static void handle_key(int key) {
     case 'D':
     case 'd':
       start_motion(ball_attached ? side_step_right_carry : side_step_right);
+      break;
+    case 'O':
+    case 'o':
+      start_motion(shoot);
       break;
     case WB_KEYBOARD_LEFT:
       start_motion(turn_left);

@@ -1,0 +1,63 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/robots/softbank/nao/protos/Nao.proto"
+
+WorldInfo {
+}
+Viewpoint {
+  orientation 0.045981220017630185 -0.03366380131471023 -0.9983749174967959 4.40390070552941
+  position 1.633565426847883 -3.693140877601274 0.793297583306078
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 10 10
+}
+Nao {
+  controller "humanoid_controller"
+}
+Solid {
+  translation 0.45 0 0.125
+  children [
+    Shape {
+      appearance PBRAppearance {
+      }
+      geometry Box {
+        size 0.5 0.35 0.25
+      }
+      isPickable FALSE
+    }
+  ]
+  name "pickup_table"
+  boundingObject Box {
+    size 0.5 0.35 0.25
+  }
+  recognitionColors [
+    0 0 0
+  ]
+}
+Solid {
+  translation 0.45 0 0.28
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 1 0 0
+      }
+      geometry Box {
+        size 0.06 0.06 0.06
+      }
+    }
+  ]
+  name "redbox"
+  boundingObject Box {
+    size 0.06 0.06 0.06
+  }
+  physics Physics {
+    mass 0.02
+  }
+}
